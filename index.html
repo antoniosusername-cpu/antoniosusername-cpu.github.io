@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Antonio Guzman — IT Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0a0c0f;
+      --surface:  #0f1318;
+      --border:   #1e2530;
+      --accent:   #00d4aa;
+      --accent2:  #0066ff;
+      --text:     #c8d6e5;
+      --muted:    #4a5568;
+      --white:    #f0f4f8;
+      --mono:     'JetBrains Mono', monospace;
+      --sans:     'Syne', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* subtle grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 48px;
+      background: rgba(10,12,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 120px 48px 80px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .hero-label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+
+    .hero-name {
+      font-family: var(--sans);
+      font-size: clamp(48px, 8vw, 96px);
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.35s;
+    }
+
+    .hero-name span {
+      color: transparent;
+      -webkit-text-stroke: 1px var(--accent);
+    }
+
+    .hero-tagline {
+      font-size: clamp(14px, 2vw, 18px);
+      color: var(--muted);
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.5s;
+    }
+
+    .hero-tagline em {
+      font-style: normal;
+      color: var(--text);
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.65s;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 3px;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      background: #00f0c0;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    /* terminal window decoration */
+    .terminal-badge {
+      margin-top: 64px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 24px;
+      max-width: 480px;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.8s;
+    }
+
+    .terminal-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #febc2e; }
+    .dot-g { background: #28c840; }
+
+    .terminal-line { color: var(--muted); }
+    .terminal-line .cmd { color: var(--accent); }
+    .terminal-line .val { color: var(--white); }
+
+    /* ── SECTIONS ── */
+    section {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 100px 48px;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-family: var(--sans);
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 56px;
+      letter-spacing: -0.02em;
+    }
+
+    /* ── SKILLS ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 24px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .skill-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .skill-icon {
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+
+    .skill-name {
+      font-family: var(--sans);
+      font-weight: 700;
+      color: var(--white);
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .skill-status {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 2px;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    .badge-learning { background: rgba(0,212,170,0.1); color: var(--accent); border: 1px solid rgba(0,212,170,0.3); }
+    .badge-inprogress { background: rgba(0,102,255,0.1); color: #6699ff; border: 1px solid rgba(0,102,255,0.3); }
+
+    /* ── PROJECTS ── */
+    .projects-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 28px 32px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      transition: border-color 0.2s;
+    }
+
+    .project-card:hover { border-color: var(--accent); }
+
+    .project-num {
+      font-size: 11px;
+      color: var(--muted);
+      min-width: 28px;
+    }
+
+    .project-body { flex: 1; }
+
+    .project-name {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 17px;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+
+    .project-desc { color: var(--muted); font-size: 13px; }
+
+    .project-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .tag {
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 2px 8px;
+    }
+
+    .project-link {
+      font-size: 12px;
+      color: var(--accent);
+      text-decoration: none;
+      white-space: nowrap;
+      align-self: center;
+      transition: opacity 0.2s;
+    }
+
+    .project-link:hover { opacity: 0.7; }
+
+    /* ── EDUCATION ── */
+    .edu-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 6px 6px 0;
+      padding: 28px 32px;
+    }
+
+    .edu-school {
+      font-family: var(--sans);
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .edu-program {
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .edu-detail { color: var(--muted); font-size: 12px; }
+
+    /* ── CONTACT ── */
+    .contact-line {
+      font-size: clamp(14px, 2vw, 17px);
+      color: var(--muted);
+      margin-bottom: 40px;
+      max-width: 520px;
+    }
+
+    .contact-links {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 32px 48px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav { padding: 16px 24px; }
+      .nav-links { gap: 20px; }
+      .hero, section { padding-left: 24px; padding-right: 24px; }
+      .project-card { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">ag@portfolio:~$</div>
+    <ul class="nav-links">
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-label">IT Portfolio</div>
+    <h1 class="hero-name">Antonio<br/><span>Guzman</span></h1>
+    <p class="hero-tagline">IT Student · <em>Cloud &amp; Infrastructure Focus</em> · Utah Valley University</p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn btn-primary">View Projects</a>
+      <a href="#contact" class="btn btn-outline">Get in Touch</a>
+    </div>
+    <div class="terminal-badge">
+      <div class="terminal-bar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+      </div>
+      <div class="terminal-line"><span class="cmd">$ </span><span class="val">whoami</span></div>
+      <div class="terminal-line" style="color: var(--text); margin-left: 16px;">Antonio Guzman — IT student building in cloud</div>
+      <div class="terminal-line" style="margin-top:8px;"><span class="cmd">$ </span><span class="val">cat focus.txt</span></div>
+      <div class="terminal-line" style="color: var(--text); margin-left: 16px;">Cloud infrastructure · Linux · Python automation</div>
+      <div class="terminal-line" style="margin-top:8px;"><span class="cmd">$ </span><span class="val">echo $STATUS</span></div>
+      <div class="terminal-line" style="color: var(--accent); margin-left: 16px;">open to internships &amp; entry-level opportunities</div>
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-label">01 / Skills</div>
+    <h2 class="section-title">What I Work With</h2>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-icon">🐧</div>
+        <div class="skill-name">Linux</div>
+        <div class="skill-status">CLI, file system, bash scripting</div>
+        <span class="badge badge-learning">Learning</span>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🐍</div>
+        <div class="skill-name">Python</div>
+        <div class="skill-status">Scripting &amp; automation</div>
+        <span class="badge badge-learning">Learning</span>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">☁️</div>
+        <div class="skill-name">AWS</div>
+        <div class="skill-status">Cloud Practitioner cert in progress</div>
+        <span class="badge badge-inprogress">In Progress</span>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🔧</div>
+        <div class="skill-name">IT Fundamentals</div>
+        <div class="skill-status">Networking, systems, troubleshooting</div>
+        <span class="badge badge-learning">Learning</span>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🐙</div>
+        <div class="skill-name">Git &amp; GitHub</div>
+        <div class="skill-status">Version control, repositories</div>
+        <span class="badge badge-learning">Learning</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-label">02 / Projects</div>
+    <h2 class="section-title">What I'm Building</h2>
+    <div class="projects-list">
+      <div class="project-card">
+        <div class="project-num">01</div>
+        <div class="project-body">
+          <div class="project-name">IT Portfolio Site</div>
+          <div class="project-desc">Personal portfolio hosted on GitHub Pages. Built with HTML and CSS — no frameworks, just fundamentals.</div>
+          <div class="project-tags">
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+            <span class="tag">GitHub Pages</span>
+          </div>
+        </div>
+        <a href="#" class="project-link">↗ GitHub</a>
+      </div>
+      <div class="project-card">
+        <div class="project-num">02</div>
+        <div class="project-body">
+          <div class="project-name">Cloud Notes Repository</div>
+          <div class="project-desc">Structured notes and documentation on cloud systems, AWS concepts, and infrastructure fundamentals. Updated as I learn.</div>
+          <div class="project-tags">
+            <span class="tag">AWS</span>
+            <span class="tag">Documentation</span>
+            <span class="tag">Markdown</span>
+          </div>
+        </div>
+        <a href="#" class="project-link">↗ GitHub</a>
+      </div>
+      <div class="project-card">
+        <div class="project-num">03</div>
+        <div class="project-body">
+          <div class="project-name">Python Automation Scripts</div>
+          <div class="project-desc">Small utility scripts for IT tasks — coming soon as I progress through Python fundamentals.</div>
+          <div class="project-tags">
+            <span class="tag">Python</span>
+            <span class="tag">Automation</span>
+            <span class="tag">Linux</span>
+          </div>
+        </div>
+        <a href="#" class="project-link">↗ GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="section-label">03 / Education</div>
+    <h2 class="section-title">Academic Background</h2>
+    <div class="edu-card">
+      <div class="edu-school">Utah Valley University</div>
+      <div class="edu-program">Information Technology Program</div>
+      <div class="edu-detail">Orem, Utah · Online · Currently Enrolled</div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-label">04 / Contact</div>
+    <h2 class="section-title">Get in Touch</h2>
+    <p class="contact-line">I'm an IT student looking for internship opportunities and hands-on experience in cloud and infrastructure. Feel free to reach out.</p>
+    <div class="contact-links">
+      <a href="https://github.com/" class="btn btn-outline" target="_blank">↗ GitHub</a>
+      <a href="mailto:your@email.com" class="btn btn-outline">✉ Email</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>Antonio Guzman · Built &amp; hosted on GitHub Pages</span>
+  </footer>
+
+</body>
+</html>
